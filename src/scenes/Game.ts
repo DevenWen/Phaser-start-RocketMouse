@@ -4,6 +4,7 @@ import AnimationKeys from '~/consts/AnimationKeys'
 import TextureKeys from '~/consts/TextureKeys'
 import LaserObstacle from '~/game/LaserObstacle'
 import RocketMouse from '~/game/RocketMouse'
+import main from '~/main'
 
 export default class Game extends Phaser.Scene
 {
@@ -103,7 +104,7 @@ export default class Game extends Phaser.Scene
 
         this.physics.world.setBounds(
             0, 0,
-            Number.MAX_SAFE_INTEGER, height - 30
+            Number.MAX_SAFE_INTEGER, height - 55
         )
 
         this.physics.add.overlap(
@@ -114,6 +115,9 @@ export default class Game extends Phaser.Scene
             this
         )
 
+        this.coins = this.physics.add.staticGroup()
+        this.spwanCoins()
+
         this.physics.add.overlap(
             this.coins,
             mouse,
@@ -121,9 +125,6 @@ export default class Game extends Phaser.Scene
             undefined,
             this
         )
-
-        this.coins = this.physics.add.staticGroup()
-        this.spwanCoins()
 
         this.scoreLabel = this.add.text(10, 10, `Socre: ${this.score}`, {
             fontSize: '24px',
@@ -185,6 +186,7 @@ export default class Game extends Phaser.Scene
             const body = coin.body as Phaser.Physics.Arcade.StaticBody
             body.setCircle(body.width * 0.5)
             body.enable = true
+            body.updateFromGameObject()
 
             x += coin.width * 1.5
         }
@@ -290,8 +292,49 @@ export default class Game extends Phaser.Scene
                 this.bookcase1.x + width,
                 this.bookcase1.x + width + 800
             )
+            this.spwanCoins()
         }
 
+    }
+
+    private teleportBackwards()
+    {
+        const scrollX = this.cameras.main.scrollX
+        const maxX = 2500
+
+        if (scrollX > maxX)
+        {
+            console.info("backwards teleport!")
+            this.mouse.x -= maxX
+            this.mouseHole.x -= maxX
+
+            this.windows.forEach(win => {
+                win.x -= maxX
+            })
+
+            this.bookcases.forEach(bc => {
+                bc.x -= maxX
+            })
+
+            this.laserObstacle.x -= maxX
+            const laserBody = this.laserObstacle.body as Phaser.Physics.Arcade.StaticBody
+
+            laserBody.x -= maxX
+
+            this.spwanCoins()
+
+            this.coins.children.each(child => {
+                const coin = child as Phaser.Physics.Arcade.Sprite
+                if (!coin.active)
+                {
+                    return
+                }
+
+                coin.x -= maxX
+                const body = coin.body as Phaser.Physics.Arcade.StaticBody
+                body.updateFromGameObject()
+            })
+        }
     }
 
 
@@ -301,6 +344,7 @@ export default class Game extends Phaser.Scene
         this.wrapWindows()
         this.wrapBookcase()
         this.wrapLaserObtacle()
+        this.teleportBackwards()
         this.background.setTilePosition(this.cameras.main.scrollX)
     }
 }

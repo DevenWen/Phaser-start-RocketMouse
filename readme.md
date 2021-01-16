@@ -1,3 +1,16 @@
+# Phaser H5 游戏教程
+
+这个项目是根据教程：https://github.com/ourcade 的指导下进行的。作者：Tommy Leung 编写一份非常详细的教程：Infinite_Runner_Phaser3_TypeScript.pdf
+从官方文档就可以下载了。
+
+这个教程非常简单，连 JS 的基础都可以不需要，只要能够编写 Java 和熟悉 OOP 就可以编写了。
+
+这个项目就是基于教程编写的，大概花了我一天时间，感觉编写游戏还是非常有意思。
+
+enjoy
+
+
+
 ![phaser3-parceljs-template](https://user-images.githubusercontent.com/2236153/71606463-37a0da80-2b2e-11ea-9b5f-5d26ccc84f91.png)
 
 # Phaser 3 + TypeScript + Parcel Template
